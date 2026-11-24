@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>安全知多少</title>
+    <style>
+        /* 整體畫面置中與背景設計 */
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            color: #2d3748;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        /* 卡片容器 */
+        .card {
+            background: #ffffff;
+            max-width: 480px;
+            width: 100%;
+            padding: 40px 30px;
+            border-radius: 24px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
+            text-align: center;
+        }
+
+        /* 每一頁預設隱藏，只有加上 active 才會顯示 */
+        .page {
+            display: none;
+            animation: fadeIn 0.35s ease-out;
+        }
+        .page.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(12px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 題號標籤 */
+        .badge {
+            display: inline-block;
+            background-color: #ebf4ff;
+            color: #3182ce;
+            font-size: 13px;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 999px;
+            margin-bottom: 16px;
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 26px;
+            margin: 0 0 16px 0;
+            color: #1a202c;
+            line-height: 1.4;
+        }
+
+        p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #718096;
+            margin: 0 0 32px 0;
+        }
+
+        /* 選項按鈕設計 */
+        .btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+        }
+
+        button {
+            background-color: #4a6cf7;
+            color: white;
+            border: none;
+            padding: 16px 24px;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 12px rgba(74, 108, 247, 0.2);
+        }
+
+        button:hover {
+            background-color: #3858d6;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(74, 108, 247, 0.3);
+        }
+
+        button:active {
+            transform: scale(0.98);
+        }
+
+        /* 次要按鈕（重新開始） */
+        button.secondary {
+            background-color: #edf2f7;
+            color: #4a5568;
+            box-shadow: none;
+            margin-top: 12px;
+        }
+
+        button.secondary:hover {
+            background-color: #e2e8f0;
+            box-shadow: none;
+        }
+
+        /* 統計數據框 */
+        .score-box {
+            background-color: #f7fafc;
+            border: 2px dashed #cbd5e0;
+            border-radius: 16px;
+            padding: 24px;
+            margin-bottom: 28px;
+        }
+
+        .score-row {
+            font-size: 20px;
+            font-weight: 700;
+            margin: 10px 0;
+        }
+
+        .correct-text { color: #38a169; }
+        .wrong-text { color: #e53e3e; }
+
+        /* 最後一頁超大標語 */
+        .grand-finale {
+            font-size: 32px;
+            font-weight: 900;
+            color: #1a202c;
+            line-height: 1.45;
+            margin: 20px 0 36px 0;
+            letter-spacing: 1px;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <!-- 開場頁 -->
+    <div id="page-start" class="page active">
+        <div class="badge">QUIZ TIME</div>
+        <h1>安全知多少</h1>
+        <p>測測看你對「安全」到底有多了解！<br>準備好就點擊下方按鈕開始挑戰。</p>
+        <div class="btn-group">
+            <button onclick="startQuiz()">開始測驗</button>
+        </div>
+    </div>
+
+    <!-- 第一題 -->
+    <div id="page-q1" class="page">
+        <div class="badge">第 1 / 3 題</div>
+        <h1>安全休閒時間喜歡做什麼？</h1>
+        <p>請憑直覺選出正確答案</p>
+        <div class="btn-group">
+            <button onclick="answerQuestion(false, 'page-q2')">選項一：鉤織</button>
+            <button onclick="answerQuestion(true, 'page-q2')">選項二：看男同</button>
+        </div>
+    </div>
+
+    <!-- 第二題 -->
+    <div id="page-q2" class="page">
+        <div class="badge">第 2 / 3 題</div>
+        <h1>安全喜歡吃什麼？</h1>
+        <p>二選一，猜猜看！</p>
+        <div class="btn-group">
+            <button onclick="answerQuestion(true, 'page-q3')">吃燒烤</button>
+            <button onclick="answerQuestion(false, 'page-q3')">吃火鍋</button>
+        </div>
+    </div>
+
+    <!-- 第三題 -->
+    <div id="page-q3" class="page">
+        <div class="badge">第 3 / 3 題</div>
+        <h1>安全現在有特別 into 追星嗎？</h1>
+        <p>最後一題囉！</p>
+        <div class="btn-group">
+            <button onclick="answerQuestion(false, 'page-result')">有</button>
+            <button onclick="answerQuestion(true, 'page-result')">沒有</button>
+        </div>
+    </div>
+
+    <!-- 倒數第二頁：統計結果 -->
+    <div id="page-result" class="page">
+        <div class="badge">測驗結算</div>
+        <h1>你的作答成績出爐！</h1>
+        <div class="score-box">
+            <div class="score-row correct-text">總共答對：<span id="correct-count">0</span> 題</div>
+            <div class="score-row wrong-text">總共答錯：<span id="wrong-count">0</span> 題</div>
+        </div>
+        <div class="btn-group">
+            <button onclick="goToPage('page-final')">點擊查看最終結語</button>
+        </div>
+    </div>
+
+    <!-- 最後一頁：大大的結語 -->
+    <div id="page-final" class="page">
+        <div class="grand-finale">恭喜您完成一份毫無意義的問答</div>
+        <div class="btn-group">
+            <button class="secondary" onclick="startQuiz()">不服氣，再玩一次</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let correctCount = 0;
+    let wrongCount = 0;
+
+    // 切換頁面函式
+    function goToPage(pageId) {
+        const pages = document.querySelectorAll('.page');
+        pages.forEach(page => page.classList.remove('active'));
+
+        const targetPage = document.getElementById(pageId);
+        if (targetPage) {
+            targetPage.classList.add('active');
+        }
+    }
+
+    // 開始/重新開始測驗（歸零分數並跳到第一題）
+    function startQuiz() {
+        correctCount = 0;
+        wrongCount = 0;
+        goToPage('page-q1');
+    }
+
+    // 記錄作答對錯並前往下一頁
+    function answerQuestion(isCorrect, nextPageId) {
+        if (isCorrect) {
+            correctCount++;
+        } else {
+            wrongCount++;
+        }
+
+        // 如果下一頁是結算頁，先更新畫面上的對錯題數
+        if (nextPageId === 'page-result') {
+            document.getElementById('correct-count').textContent = correctCount;
+            document.getElementById('wrong-count').textContent = wrongCount;
+        }
+
+        goToPage(nextPageId);
+    }
+</script>
+
+</body>
+</html>
